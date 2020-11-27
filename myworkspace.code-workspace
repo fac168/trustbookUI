@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "ui"
+		},
+		{
+			"path": "..\\git\\gradaid-web-app\\web-ui\\src"
 		}
 	],
 	"settings": {}
