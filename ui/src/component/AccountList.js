@@ -3,7 +3,7 @@ import React, { Component, } from 'react';
 import {Form, FormGroup, Label, Input, } from 'reactstrap';
 import firebase from '../firebase/index';
 
-class AccountAdd extends Component {
+class AccountList extends Component {
 
   constructor() {
     super();
@@ -119,4 +119,4 @@ class AccountAdd extends Component {
   }
 }
 
-export default  (AccountAdd);
+export default  (AccountList);
