@@ -29,7 +29,7 @@ class AccountAdd extends Component {
       db.collection('accounts').doc(this.state.accountName)
         .set({
           ownerFirstName: this.state.ownerFirstName,
-          ownerLastname: this.state.ownerLastName,
+          ownerLastName: this.state.ownerLastName,
         })
         .then(() => {
           this.setState({
