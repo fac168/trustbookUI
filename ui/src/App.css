@@ -36,3 +36,37 @@
     transform: rotate(360deg);
   }
 }
+
+/*
+ * Bootstrap 
+ */
+ .main-nav {
+  background-color: #1b3d6d;
+  border-top: 3px solid white;
+  border-bottom: 3px solid #0064a4;
+  margin-bottom: 30px;
+  /* height: auto; */
+}
+
+/* Style the nav items on the main navigation */
+.main-nav-item {
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Apply the background and text hover color */
+.main-nav-item:hover {
+  text-decoration: none;
+  background-color: #6aa2b8;
+  color: white;
+}
+
+/* Apply dark background when clicking nav item */
+.main-nav-item:active {
+  text-decoration: none;
+  background-color: #0064a4;
+  color: white;
+}
+
