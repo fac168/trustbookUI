@@ -2,6 +2,9 @@ import React, { Component, } from 'react';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import firebase from '../firebase/index';
+import TransactionAdd from './TransactionAdd';
+import { FontAwesomeIcon, } from '@fortawesome/react-fontawesome';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 class AccountList extends Component {
 
@@ -9,6 +12,8 @@ class AccountList extends Component {
     super();
     this.state = {
      list: [],
+     showModal: false,
+     accountId: '',
     };
   }
 
@@ -28,6 +33,28 @@ class AccountList extends Component {
         console.log("Error getting documents: ", error);
     });
 
+  }
+  setActionButton (cell, row) {
+    let icon = '';
+    let title = '';
+    var acctId = row.id;
+
+      icon = faPencilAlt;
+      title = 'View or Modify Fellowship';
+
+    return (
+      <button className='btn p-0' onClick={() => this.openModal(acctId)} >
+
+        <dd title={title} > <FontAwesomeIcon icon={icon} /></dd>
+      </button>
+    );
+  }
+  openModal(acctId) {
+    this.setState({...this.state, showModal: true, accountId: acctId});
+
+  }
+  closeModal = () => {
+    this.setState({...this.state, showModal: false });
   }
   render() {
     let list = null;
@@ -51,6 +78,15 @@ class AccountList extends Component {
         sort: true,
         /*headerStyle: { width: 125, },*/
       },
+      {
+        dataField: 'action',
+        text: 'Action',
+        isDummyField: true,
+        formatter: (cell, row) => this.setActionButton(cell, row),
+        headerStyle: { width: 125, },
+        align: 'center',
+      },
+
     ];
 
     const defaultSorted = [
@@ -70,7 +106,7 @@ class AccountList extends Component {
           striped
           bootstrap4
           hover
-          keyField='studentId'
+          keyField='id'
           data={this.state.list}
           columns={columns}
 //          defaultSorted={defaultSorted}
@@ -80,7 +116,9 @@ class AccountList extends Component {
         />
       </div>
     )
-        
+    const renderModal = (
+      <TransactionAdd showModal={this.state.showModal} handleExit={this.closeModal} accountId={this.state.accountId} transactionId={this.state.transactionId} />    
+    )
     return (
       <div>
         <div className='container-fluid'>
@@ -88,6 +126,9 @@ class AccountList extends Component {
         </div>
         <div className='lead'>
           {successMsg}
+        </div>
+        <div>
+          {renderModal}
         </div>
       </div>
     );
