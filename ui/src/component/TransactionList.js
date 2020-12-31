@@ -6,7 +6,7 @@ import TransactionAdd from './TransactionAdd';
 import { FontAwesomeIcon, } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-class AccountList extends Component {
+class TransactionList extends Component {
 
   constructor() {
     super();
@@ -14,8 +14,6 @@ class AccountList extends Component {
      list: [],
      showModal: false,
      accountId: '',
-     categoryList: [],
-     propertyList: [],
     };
   }
 
@@ -33,32 +31,7 @@ class AccountList extends Component {
       })
       .catch(function(error) {
         console.log("Error getting documents: ", error);
-      });
-    db.collection('category').get()
-      .then((querySnapshot) => {
-        let categoryListVar = [];
-        querySnapshot.forEach((doc) => {
-          const id = doc.id;
-          categoryListVar.push(id);
-        })
-        this.setState({...this.state, categoryList: categoryListVar})
-      })
-      .catch(function(error) {
-        console.log("Error getting documents: ", error);
-      });
-
-      db.collection('property').get()
-      .then((querySnapshot) => {
-        let propertyListVar = [];
-        querySnapshot.forEach((doc) => {
-          const id = doc.id;
-          propertyListVar.push(id);
-        })
-        this.setState({...this.state, propertyList: propertyListVar})
-      })
-      .catch(function(error) {
-        console.log("Error getting documents: ", error);
-      });
+    });
 
   }
   setActionButton (cell, row) {
@@ -144,13 +117,7 @@ class AccountList extends Component {
       </div>
     )
     const renderModal = (
-      <TransactionAdd 
-        showModal={this.state.showModal} 
-        handleExit={this.closeModal} 
-        accountId={this.state.accountId} 
-        categoryList={this.state.categoryList} 
-        propertyList={this.state.propertyList}
-      />    
+      <TransactionAdd showModal={this.state.showModal} handleExit={this.closeModal} accountId={this.state.accountId}  />    
     )
     return (
       <div>
@@ -171,4 +138,4 @@ class AccountList extends Component {
   }
 }
 
-export default  (AccountList);
+export default  (TransactionList);

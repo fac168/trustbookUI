@@ -81,6 +81,22 @@ class TransactionAdd extends Component {
     let transactionForm = null;
     let successMsg = this.state.successMsg;
     
+    const categoryListOptions = () => {
+      let categoryBuild = [];
+      categoryBuild.push(<option key='New' value='New'>New</option>);
+      categoryBuild.push(this.props.categoryList.map(e=> {
+        return <option key={e} value={e}>{e}</option>;
+      }));
+      return categoryBuild;
+    }
+    const propertyListOptions = () => {
+      let propertyBuild = [];
+      propertyBuild.push(<option key='New' value='New'>New</option>);
+      propertyBuild.push(this.props.propertyList.map(e=> {
+        return <option key={e} value={e}>{e}</option>;
+      }));
+      return propertyBuild;
+    }
     transactionForm = (
       <div className='form'>
         <Modal isOpen={this.props.showModal} className='modal-lg' >
@@ -124,12 +140,21 @@ class TransactionAdd extends Component {
             </FormGroup>
             <FormGroup className='row my-3'>
               <Label className = 'col-md-2' for="category">Category:</Label>
-              <Input className='form-control col-md-2' 
-                type='text' 
-                name='category' 
-                id='category' 
-                value={this.state.category}
-                onChange={this.updateInput}/>
+              <div className='col-md'>
+              <select id='category' name='category' value={this.state.category} onChange={this.updateInput} >
+                {categoryListOptions()}
+              </select>
+              </div>
+
+            </FormGroup>
+            <FormGroup className='row my-3'>
+              <Label className = 'col-md-2' for="property">Property:</Label>
+              <div className='col-md'>
+              <select id='property' name='property' value={this.state.property} onChange={this.updateInput} >
+                {propertyListOptions()}
+              </select>
+              </div>
+
             </FormGroup>
             <div className='col-md-4'>
               <input type='submit' 
