@@ -3,6 +3,7 @@ import React, { Component, } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import firebase from '../firebase/index';
 import TransactionAdd from './TransactionAdd';
+import TransactionList from './TransactionList';
 import { FontAwesomeIcon, } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,9 +14,11 @@ class AccountList extends Component {
     this.state = {
      list: [],
      showModal: false,
+     showTransaction: false,
      accountId: '',
      categoryList: [],
      propertyList: [],
+     transactionList: [],
     };
   }
 
@@ -30,6 +33,7 @@ class AccountList extends Component {
             const ownerFirstName = data.ownerFirstName;
             this.setState({list: [...this.state.list, {id, ownerLastName, ownerFirstName}] });
         });
+        this.setState({...this.state, accountId: this.state.list[0].id, showTransaction: true});
       })
       .catch(function(error) {
         console.log("Error getting documents: ", error);
@@ -76,11 +80,44 @@ class AccountList extends Component {
       </button>
     );
   }
+  fetchTransaction(accountId) {
+    const db = firebase.firestore();
+    let transactionList = [];
+    db.collection('transaction')
+      .where('accountName', '==', accountId)
+      .orderBy('transactionDate', 'desc')
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            const transactionDate = data.transactionDate.toDate().toISOString().split('T')[0]
+            const category = data.category;
+            const description = data.description;
+            const transactionAmount = data.transactionAmount;
+            const property = data.property;
+            transactionList.push({id, transactionDate, category, description, transactionAmount, property});
+//            this.setState({transactionList: [...this.state.transactionList, {id, transactionDate, category, description, transactionAmount, property}] });
+        });
+      })
+      .then(() => {
+          this.setState({...this.state, accountId: accountId, showTransaction: true, transactionList: transactionList});
+        })
+      .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+  
+  }
+  handleAccountSelect(cell, row, rowIndex) {
+    this.fetchTransaction(row.id);     
+    this.setState({...this.state, accountId: row.id, showTransaction: true});
+  }
   openModal(acctId) {
     this.setState({...this.state, showModal: true, accountId: acctId});
 
   }
   closeModal = () => {
+    this.fetchTransaction(this.state.accountId);
     this.setState({...this.state, showModal: false });
   }
   render() {
@@ -118,14 +155,16 @@ class AccountList extends Component {
 
     const defaultSorted = [
       {
-        dataField: 'fullName',
-        order: 'asc',
-      },
-      {
-        dataField: 'majorDescShort',
+        dataField: 'ownerLastName',
         order: 'asc',
       },
     ];
+
+    const rowEvents = {
+      onDoubleClick: (e, row, rowIndex) => {
+        this.handleAccountSelect(e, row, rowIndex);
+      },
+    };
 
     list = (
       <div>
@@ -136,10 +175,10 @@ class AccountList extends Component {
           keyField='id'
           data={this.state.list}
           columns={columns}
-//          defaultSorted={defaultSorted}
+          defaultSorted={defaultSorted}
 //          pagination={paginationFactory(pageOptions)}
 //          noDataIndication={() => EMPTY_RESULTS_MSG}
-//          rowEvents={rowEvents}
+          rowEvents={rowEvents}
         />
       </div>
     )
@@ -152,6 +191,12 @@ class AccountList extends Component {
         propertyList={this.state.propertyList}
       />    
     )
+    let renderTransaction = '';
+    if (this.state.showTransaction) {
+      renderTransaction = (
+        <TransactionList transactionList={this.state.transactionList} />
+      )
+    } 
     return (
       <div>
         <div className='container-fluid'>
@@ -164,7 +209,7 @@ class AccountList extends Component {
           {renderModal}
         </div>
         <div>
-          
+          {renderTransaction}
         </div>
       </div>
     );
